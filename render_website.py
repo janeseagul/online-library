@@ -1,5 +1,8 @@
 import json
 import os
+from math import ceil
+
+
 from livereload import Server
 
 from jinja2 import Enviroment, FileSystemLoader, select_autoescape
@@ -35,6 +38,8 @@ def on_reload():
 
         rendered_page = template.render(
             books=block_books,
+            page=page,
+            max_pages=ceil(len(books) / 20),
         )
 
         path_page = os.path.join('pages', f'index{str(page)}.html')
