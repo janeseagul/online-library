@@ -1,4 +1,5 @@
 import json
+import os
 from livereload import Server
 
 from jinja2 import Enviroment, FileSystemLoader, select_autoescape
@@ -19,22 +20,30 @@ def get_books_from_json(filename):
 
 
 def on_reload():
-    books = get_books_from_json(BOOKS_FILENAME)
 
-    env = Enviroment(
-        loader=FileSystemLoader('.'),
-        autoescape=select_autoescape(['html', 'xml'])
-    )
-    template = env.get_template('template.html')
+    os.makedirs('pages', exist_ok=True)
 
-    render_page = template.render(
-        books=books
-    )
-    with open('index.html', 'w', encoding='utf8') as file:
-        file.write(render_page)
+    books = fetch_books_from_json(BOOKS_FILENAME)
+
+    for page, block_books in enumerate(ichunked(books, 20), start=1):
+        env = Environment(
+            loader=FileSystemLoader('.'),
+            autoescape=select_autoescape(['html', 'xml'])
+        )
+
+        template = env.get_template('template.html')
+
+        rendered_page = template.render(
+            books=block_books,
+        )
+
+        path_page = os.path.join('pages', f'index{str(page)}.html')
+        with open(path_page, 'w', encoding="utf8") as file:
+            file.write(rendered_page)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
+
     on_reload()
     server = Server()
     server.watch('template.html', on_reload)
