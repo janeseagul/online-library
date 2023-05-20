@@ -1,4 +1,4 @@
-<!doctype html>
+<<!doctype html>
 <html lang="ru">
   <head>
     <!-- Required meta tags -->
@@ -8,41 +8,43 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-     <title>Книги по научной фантастике</title>
+    <title>Книги по научной фантастике</title>
   </head>
   <body>
     <div class="container">
-      <nav aria-label="Page books navigation">
-        <ul class="pagination">
-          {% for _ in range(max_pages) %}
-            {% if loop.first %}
-              {% if page == 1 %}
-                <li class="page-item disabled">
-                  <span class="page-link">Назад</span>
-                </li>
-              {% else %}
-                <li class="page-item">
-                  <a class="page-link" href="{{'index{}.html'.format(page-1)}}">Назад</a>
-                </li>
+      <div class="row mx-auto" style="width: 500px;">
+        <nav class="mt-4" aria-label="Page books navigation">
+          <ul class="pagination">
+            {% for _ in range(max_pages) %}
+              {% if loop.first %}
+                {% if page == 1 %}
+                  <li class="page-item disabled">
+                    <span class="page-link">Предыдущая</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="{{'index{}.html'.format(page-1)}}">Предыдущая</a>
+                  </li>
+                {% endif %}
               {% endif %}
-            {% endif %}
-              <li class="page-item {% if page == loop.index %} active {% endif %}">
-                <a class="page-link" href="{{'index{}.html'.format(loop.index)}}">{{loop.index}}</a>
-              </li>
-            {% if loop.last %}
-              {% if page == max_pages %}
-                <li class="page-item disabled">
-                  <span class="page-link">Вперед</span>
+                <li class="page-item {% if page == loop.index %} active {% endif %}">
+                  <a class="page-link" href="{{'index{}.html'.format(loop.index)}}">{{loop.index}}</a>
                 </li>
-              {% else %}
-                <li class="page-item">
-                  <a class="page-link" href="{{'index{}.html'.format(page+1)}}">Вперед</a>
-                </li>
+              {% if loop.last %}
+                {% if page == max_pages %}
+                  <li class="page-item disabled">
+                    <span class="page-link">Следующая</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="{{'index{}.html'.format(page+1)}}">Следующая</a>
+                  </li>
+                {% endif %}
               {% endif %}
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </nav>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
       <div class="row">
         {% for book in books %}
           <div class="col-6 card mb-3" style="max-width: 540px;">
@@ -54,13 +56,18 @@
                 <div class="card-body">
                   <h5 class="card-title">{{book.title}}</h5>
                   <p class="card-text">{{book.author}}</p>
+                  {% for genre in book.genres %}
+                    <span class="badge badge-pill badge-light mb-3">{{genre}}</span>
+                  {% endfor %}
+                  <br>
                   <a href="../{{book.book_path|urlencode}}" target="_blank">Читать</a>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
-  </div>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
