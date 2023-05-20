@@ -1,12 +1,9 @@
 import json
 import os
 from math import ceil
-
-
+from more_itertools import ichunked
 from livereload import Server
-
-from jinja2 import Enviroment, FileSystemLoader, select_autoescape
-
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 BOOKS_FILENAME = 'books.json'
 
@@ -16,19 +13,18 @@ def get_books_from_json(filename):
         books = json.loads(file.read())
 
     for book in books:
-        book['img_src'] = book['img_src'].replace('\\', '/')
+        book['image_src'] = book['image_src'].replace('\\', '/')
         book['book_path'] = book['book_path'].replace('\\', '/')
 
     return books
 
 
 def on_reload():
-
     os.makedirs('pages', exist_ok=True)
+    books_per_page = 10
+    books = get_books_from_json(BOOKS_FILENAME)
 
-    books = fetch_books_from_json(BOOKS_FILENAME)
-
-    for page, block_books in enumerate(ichunked(books, 20), start=1):
+    for page, block_books in enumerate(ichunked(books, books_per_page), start=1):
         env = Environment(
             loader=FileSystemLoader('.'),
             autoescape=select_autoescape(['html', 'xml'])
@@ -39,7 +35,7 @@ def on_reload():
         rendered_page = template.render(
             books=block_books,
             page=page,
-            max_pages=ceil(len(books) / 20),
+            max_pages=ceil(len(books) / books_per_page),
         )
 
         path_page = os.path.join('pages', f'index{str(page)}.html')
