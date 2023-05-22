@@ -44,7 +44,6 @@ def on_reload():
 
 
 if __name__ == '__main__':
-
     on_reload()
     server = Server()
     server.watch('template.html', on_reload)
