@@ -11,11 +11,9 @@ BOOKS_FILENAME = 'books.json'
 def get_books_from_json(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         books = json.loads(file.read())
-
     for book in books:
         book['image_src'] = book['image_src'].replace('\\', '/')
         book['book_path'] = book['book_path'].replace('\\', '/')
-
     return books
 
 
@@ -29,9 +27,7 @@ def on_reload():
             loader=FileSystemLoader('.'),
             autoescape=select_autoescape(['html', 'xml'])
         )
-
         template = env.get_template('template.html')
-
         rendered_page = template.render(
             books=block_books,
             page=page,
